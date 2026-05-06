@@ -7,4 +7,5 @@ public class FixesConfig
     public bool EnableTeamLimitFix { get; set; } = true;
     public bool EnableBlankMapFix { get; set; } = true;
     public bool EnableSvCheatsFix { get; set; } = true;
+    public bool EnableVoiceFix { get; set; } = true;
 }

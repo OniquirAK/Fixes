@@ -29,6 +29,7 @@
 - Team Limit Fix
 - Sv Cheats Fix
 - Blank Map Fix
+- Voice Fix ( https://github.com/Source2ZE/CS2VoiceFix )
 
 ## Acknowledgements
 
