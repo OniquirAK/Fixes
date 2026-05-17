@@ -36,6 +36,15 @@ public partial class Fixes
         playerSeeds[@event.PlayerId] = GetSeed();
     }
 
+    [EventListener<EventDelegates.OnMapLoad>]
+    void MapLoadListener(IOnMapLoadEvent @event)
+    {
+        if (!Config.CurrentValue.EnableVoiceFix)
+            return;
+
+        playerSeeds.Clear();
+    }
+
     [ServerNetMessageInternalHandler]
     public HookResult OnVoiceDataSend(CSVCMsg_VoiceData msg, int playerid)
     {
