@@ -18,6 +18,7 @@ public partial class Fixes
     private unsafe delegate void CBaseFilter_InputTestActivatorDelegate(nint pEntity, InputData_t* inputData);
 
     private IUnmanagedFunction<CBaseFilter_InputTestActivatorDelegate>? _CBaseFilter_InputTestActivatorDelegate;
+    private bool enableInputActivatorCrashFix = false;
 
     public void InitInputActivatorCrashFix()
     {
@@ -25,13 +26,19 @@ public partial class Fixes
             Core.GameData.GetSignature("CBaseFilter::InputTestActivator")
         );
 
+        enableInputActivatorCrashFix = Config.CurrentValue.EnableInputActivatorCrashFix;
+        Config.OnChange((v, _) =>
+        {
+            enableInputActivatorCrashFix = v.EnableInputActivatorCrashFix;
+        });
+
         _CBaseFilter_InputTestActivatorDelegate.AddHook(next =>
         {
             unsafe
             {
                 return (pEntity, inputData) =>
                 {
-                    if (Config.CurrentValue.EnableInputActivatorCrashFix)
+                    if (enableInputActivatorCrashFix)
                     {
                         if (inputData->Activator == 0) return;
                     }

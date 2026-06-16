@@ -5,10 +5,21 @@ namespace Fixes;
 
 public partial class Fixes
 {
+    private bool svCheatsFixEnabled = false;
+
+    private void InitSvCheatsFix()
+    {
+        svCheatsFixEnabled = Config.CurrentValue.EnableSvCheatsFix;
+        Config.OnChange((v, _) =>
+        {
+            svCheatsFixEnabled = v.EnableSvCheatsFix;
+        });
+    }
+
     [EventListener<EventDelegates.OnConVarValueChanged>]
     public void OnConVarValueChanged(IOnConVarValueChanged @event)
     {
-        if (!Config.CurrentValue.EnableSvCheatsFix) return;
+        if (!svCheatsFixEnabled) return;
 
         if (@event.ConVarName == "sv_cheats")
         {

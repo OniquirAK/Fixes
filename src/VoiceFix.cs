@@ -11,6 +11,16 @@ public partial class Fixes
 {
     private ConcurrentDictionary<int, ulong> playerSeeds = [];
     private ulong GlobalSeed = 0;
+    private bool enableVoiceFix = false;
+
+    private void InitVoiceFix()
+    {
+        enableVoiceFix = Config.CurrentValue.EnableVoiceFix;
+        Config.OnChange((v, _) =>
+        {
+            enableVoiceFix = v.EnableVoiceFix;
+        });
+    }
 
     private ulong GetSeed()
     {
@@ -30,7 +40,7 @@ public partial class Fixes
     [EventListener<EventDelegates.OnClientConnected>]
     void ConnectListener(IOnClientConnectedEvent @event)
     {
-        if (!Config.CurrentValue.EnableVoiceFix)
+        if (!enableVoiceFix)
             return;
 
         playerSeeds[@event.PlayerId] = GetSeed();
@@ -39,7 +49,7 @@ public partial class Fixes
     [EventListener<EventDelegates.OnMapLoad>]
     void MapLoadListener(IOnMapLoadEvent @event)
     {
-        if (!Config.CurrentValue.EnableVoiceFix)
+        if (!enableVoiceFix)
             return;
 
         playerSeeds.Clear();
@@ -48,7 +58,7 @@ public partial class Fixes
     [ServerNetMessageInternalHandler]
     public HookResult OnVoiceDataSend(CSVCMsg_VoiceData msg, int playerid)
     {
-        if (!Config.CurrentValue.EnableVoiceFix)
+        if (!enableVoiceFix)
             return HookResult.Continue;
 
         if (!playerSeeds.TryGetValue(playerid, out var seed))

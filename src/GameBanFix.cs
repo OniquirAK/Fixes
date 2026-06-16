@@ -20,6 +20,7 @@ public partial class Fixes
 
     private IUnmanagedFunction<CheckSteamBanDelegate>? _CheckSteamBanDelegate;
     private nint addressGCBanInfo;
+    private bool enableSteamBanFix = false;
 
     public void InitGameBanFixes()
     {
@@ -31,6 +32,12 @@ public partial class Fixes
             core.GameData.GetSignature("CCSGameRules::m_mapGcBanInformation")
         );
 
+        enableSteamBanFix = Config.CurrentValue.EnableSteamBanFix;
+        Config.OnChange((v, _) =>
+        {
+            enableSteamBanFix = v.EnableSteamBanFix;
+        });
+
         _CheckSteamBanDelegate.AddHook(next =>
         {
             unsafe
@@ -39,7 +46,7 @@ public partial class Fixes
                 {
                     next()();
 
-                    if (!Config.CurrentValue.EnableSteamBanFix) return;
+                    if (!enableSteamBanFix) return;
 
                     ref var gcBanInfoMap = ref Unsafe.AsRef<CUtlMap<uint, CGcBanInformation_t, uint>>((void*)addressGCBanInfo);
 
